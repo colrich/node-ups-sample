@@ -4,6 +4,29 @@ var app = express()
 
 
 
+/**
+ * this is what our VCAP_SERVICES block will look like -
+{
+ "VCAP_SERVICES": {
+  "user-provided": [
+   {
+    "binding_name": null,
+    "credentials": {
+     "password": "aoeuaoeu",
+     "uri": "mongodb://whatever.com:5555/mydb",
+     "user": "craig"
+    },
+    "instance_name": "dev-mongo",
+    "label": "user-provided",
+    "name": "dev-mongo",
+    "syslog_drain_url": "",
+    "tags": [],
+    "volume_mounts": []
+   }
+  ]
+ }
+}
+ */
 
 function getUserProvidedService() {
   var vcstr = process.env.VCAP_SERVICES;
