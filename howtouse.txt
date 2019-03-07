@@ -1,0 +1,2 @@
+cf cups dev-mongo -p '{"uri": "mongodb://whatever.com:5555/mydb", "user": "craig", "password": "aoeuaoeu"}'
+cf bs upsex dev-mongo
