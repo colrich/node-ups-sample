@@ -28,7 +28,7 @@ var app = express()
 }
  */
 
-function getUserProvidedService() {
+function getUserProvidedServices() {
   var vcstr = process.env.VCAP_SERVICES;
   if (vcstr != null && vcstr.length > 0 && vcstr != '{}') {
     console.log("found VCAP_SERVICES: " + vcstr)
@@ -36,8 +36,8 @@ function getUserProvidedService() {
     var vcap = JSON.parse(vcstr);
     if (vcap != null) {
       if (vcap.hasOwnProperty("user-provided")) {
-        console.log("found user-provided service instance: " + vcap["user-provided"][0].credentials);
-        return vcap["user-provided"][0].credentials;
+        console.log("found user-provided service instance: " + vcap["user-provided"]);
+        return vcap["user-provided"];
       }
     }
   }
@@ -52,10 +52,14 @@ app.set('port', (process.env.PORT || 8080))
 app.get('/', function(request, response) {
   console.log("Getting Redis connection info from the environment...")
 
-  var ups = getUserProvidedService()
+  var ups = getUserProvidedServices()
   if (ups != null) {
-    console.log("UPS URI: " + ups["uri"] + " / user: " + ups["user"] + " / pass: " + ups["password"])
-    response.send("UPS URI: " + ups["uri"] + " / user: " + ups["user"] + " / pass: " + ups["password"])
+    var respbuf = "";
+    for (var i = 0; i < ups.length; i++) {
+      console.log("UPS name: " + ups[i].instance_name + " / URI: " + ups[i].credentials["uri"] + " / user: " + ups[i].credentials["user"] + " / pass: " + ups[i].credentials["password"])
+      respbuf += ("UPS name: " + ups[i].instance_name + " / URI: " + ups[i].credentials["uri"] + " / user: " + ups[i].credentials["user"] + " / pass: " + ups[i].credentials["password"] + "<br />")
+    }
+    response.send(respbuf)
   }
   else {
     console.log("ERROR: VCAP_SERVICES does not contain a user-provided service block or no UPS bound")
